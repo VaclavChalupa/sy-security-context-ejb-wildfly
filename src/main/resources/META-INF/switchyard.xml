@@ -1,0 +1,29 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<switchyard xmlns="urn:switchyard-config:switchyard:2.0"
+			xmlns:rest="urn:switchyard-component-resteasy:config:2.0"
+			xmlns:sca="http://docs.oasis-open.org/ns/opencsa/sca/200912"
+			xmlns:bean="urn:switchyard-component-bean:config:2.0">
+
+	<sca:composite name="sy-security-context-ejb-wildfly" targetNamespace="urn:switchyard-soa:sy-security-context-ejb-wildfly:1.0">
+		<sca:service name="MyService" promote="MyService/MyService">
+			<sca:interface.java interface="org.jboss.soa.qa.security.MyService"/>
+			<rest:binding.rest>
+				<rest:interfaces>org.jboss.soa.qa.security.MyServiceResource</rest:interfaces>
+				<rest:contextPath>api</rest:contextPath>
+			</rest:binding.rest>
+		</sca:service>
+
+		<sca:component name="MyService">
+			<bean:implementation.bean class="org.jboss.soa.qa.security.MyServiceBean" requires="authorization"/>
+			<sca:service name="MyService" requires="clientAuthentication">
+				<sca:interface.java interface="org.jboss.soa.qa.security.MyService"/>
+			</sca:service>
+		</sca:component>
+	</sca:composite>
+
+	<domain>
+		<securities>
+			<security rolesAllowed="authorized"/>
+		</securities>
+	</domain>
+</switchyard>
